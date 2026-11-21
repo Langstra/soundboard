@@ -1,0 +1,7 @@
+{
+  "mcpServers": {
+    "nx-mcp": { "command": "pnpm", "args": ["exec", "nx", "mcp"] },
+    "angular-cli": { "command": "pnpm", "args": ["exec", "ng", "mcp"] },
+    "supabase": { "type": "http", "url": "http://127.0.0.1:54321/mcp" }
+  }
+}

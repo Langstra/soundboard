@@ -1,0 +1,61 @@
+:host {
+  display: block;
+}
+
+.app-sign-in {
+  margin-inline: auto;
+  max-inline-size: 28rem;
+  padding: 2rem 1rem;
+}
+
+.app-sign-in__title {
+  border-block-end: var(--rule);
+  font-family: var(--font-display);
+  font-size: 2rem;
+  letter-spacing: 0.08em;
+  margin: 0 0 1.5rem;
+  padding-block-end: 0.75rem;
+  text-transform: uppercase;
+}
+
+.app-sign-in__form {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.app-sign-in__label {
+  display: grid;
+  font-size: 0.875rem;
+  font-weight: 700;
+  gap: 0.375rem;
+}
+
+.app-sign-in__input {
+  background: var(--color-paper);
+  border: var(--rule);
+  color: var(--color-ink);
+  min-block-size: var(--tap-target);
+  padding-inline: 0.75rem;
+}
+
+.app-sign-in__error {
+  border: var(--rule);
+  font-size: 0.875rem;
+  font-weight: 700;
+  margin: 0;
+  padding: 0.5rem 0.75rem;
+}
+
+.app-sign-in__submit {
+  background: var(--color-ink);
+  border: 0;
+  color: var(--color-paper);
+  cursor: pointer;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  margin-block-start: 0.5rem;
+  min-block-size: var(--tap-target);
+  text-transform: uppercase;
+}

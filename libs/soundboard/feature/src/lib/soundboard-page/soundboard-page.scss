@@ -1,0 +1,135 @@
+:host {
+  --page-gutter: max(1rem, calc((100vw - 64rem) / 2));
+
+  display: flex;
+  flex-direction: column;
+  min-block-size: 100dvh;
+}
+
+.app-soundboard__header {
+  align-items: center;
+  border-block-end: var(--rule);
+  display: grid;
+  grid-template-columns: 1fr auto;
+  row-gap: 0.25rem;
+  background: var(--color-paper);
+  gap: 1rem;
+  inset-block-start: 0;
+  padding: 0.75rem var(--page-gutter);
+  position: sticky;
+  z-index: 1;
+}
+
+.app-soundboard__title {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  letter-spacing: 0.08em;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.app-soundboard__settings {
+  align-items: center;
+  border: var(--rule);
+  color: var(--color-ink);
+  display: inline-flex;
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  min-block-size: var(--tap-target);
+  padding-inline: 1rem;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.app-soundboard__spotify {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  grid-column: 1 / -1;
+  margin: 0;
+}
+
+.app-soundboard__overlay {
+  inset-block-end: var(--stop-bar-height);
+  inset-inline: 0;
+  position: fixed;
+  z-index: 2;
+}
+
+.app-soundboard__notice,
+.app-soundboard__toast {
+  align-items: center;
+  border-block-start: var(--rule);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: space-between;
+  padding: 0.75rem var(--page-gutter);
+}
+
+.app-soundboard__notice {
+  background: var(--color-paper);
+}
+
+.app-soundboard__toast {
+  background: var(--color-ink);
+  color: var(--color-on-ink);
+  flex-wrap: nowrap;
+}
+
+.app-soundboard__toast .app-soundboard__notice-text {
+  flex-basis: 0;
+}
+
+.app-soundboard__toast .app-soundboard__notice-action {
+  flex: none;
+}
+
+.app-soundboard__notice-text {
+  flex: 1 1 14rem;
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+.app-soundboard__notice-action {
+  background: var(--color-ink);
+  border: 0;
+  color: var(--color-paper);
+  cursor: pointer;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  min-block-size: var(--tap-target);
+  padding-inline: 1.25rem;
+  text-transform: uppercase;
+}
+
+.app-soundboard__toast .app-soundboard__notice-action {
+  background: var(--color-paper);
+  color: var(--color-ink);
+}
+
+.app-soundboard__toast .app-soundboard__notice-action:focus-visible {
+  outline-color: var(--color-paper);
+}
+
+.app-soundboard__sheet {
+  flex: 1;
+  // Reserves room so the last rows scroll clear of the fixed notice and toast.
+  padding: 0.75rem var(--page-gutter) 9rem;
+}
+
+.app-soundboard__grid {
+  border-block-start: var(--rule);
+  border-inline-start: var(--rule);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.app-soundboard__message {
+  font-size: 0.875rem;
+  grid-column: 1 / -1;
+  margin: 1rem 0;
+}

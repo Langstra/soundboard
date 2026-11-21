@@ -1,0 +1,10 @@
+{
+  "name": "spotify-data-access",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/spotify/data-access/src",
+  "prefix": "app",
+  "projectType": "library",
+  "tags": ["scope:spotify", "type:data-access"],
+  "// targets": "to see all targets run: nx show project spotify-data-access --web",
+  "targets": {}
+}

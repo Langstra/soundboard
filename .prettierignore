@@ -1,0 +1,22 @@
+# Add files here to ignore them from prettier formatting
+/dist
+/coverage
+/.nx/cache
+/.nx/workspace-data
+.angular
+
+.nx/self-healing
+# third-party agent files
+.agents
+.claude/agents
+.claude/skills
+.impeccable
+.cursor
+.codex
+.gemini
+.opencode
+.github/agents
+.github/prompts
+.github/skills
+supabase/config.toml
+pnpm-lock.yaml

@@ -1,0 +1,16 @@
+<button
+  class="app-cue-cell"
+  type="button"
+  [class.app-cue-cell--live]="isLive()"
+  [class.app-cue-cell--fading]="isFading()"
+  [class.app-cue-cell--no-song]="!hasSong()"
+  [attr.aria-current]="isLive() ? 'true' : null"
+  [disabled]="disabled()"
+  (click)="cued.emit()"
+>
+  <span class="app-cue-cell__number">{{ cueLabel() }}</span>
+
+  <span class="app-cue-cell__name" [class.app-cue-cell__name--long]="isLongName()">{{ player().displayName }}</span>
+
+  <span class="app-cue-cell__status">{{ statusLabel() }}</span>
+</button>

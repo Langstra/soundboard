@@ -1,0 +1,59 @@
+<header class="app-soundboard__header">
+  <h1 class="app-soundboard__title">Soundboard</h1>
+
+  <a class="app-soundboard__settings" routerLink="/instellingen">Instellingen</a>
+
+  <p class="app-soundboard__spotify">{{ spotifyLabel() }}</p>
+</header>
+
+<div class="app-soundboard__overlay">
+  @if (notice(); as notice) {
+    <section class="app-soundboard__notice" aria-live="polite">
+      <p class="app-soundboard__notice-text">{{ notice.text }}</p>
+
+      @if (notice.actionLabel) {
+        <button class="app-soundboard__notice-action" type="button" (click)="onNoticeAction()">
+          {{ notice.actionLabel }}
+        </button>
+      }
+    </section>
+  }
+
+  @if (sequence.error(); as message) {
+    <section class="app-soundboard__toast" role="alert">
+      <p class="app-soundboard__notice-text">{{ message }}</p>
+
+      <button class="app-soundboard__notice-action" type="button" (click)="sequence.dismissError()">Sluiten</button>
+    </section>
+  }
+</div>
+
+<main class="app-soundboard__sheet">
+  @if (players.error()) {
+    <p class="app-soundboard__message" role="alert">
+      De spelers konden niet geladen worden.
+      <button class="app-soundboard__notice-action" type="button" (click)="players.reload()">Opnieuw proberen</button>
+    </p>
+  } @else if (players.status() === 'loading') {
+    <p class="app-soundboard__message">Spelers laden…</p>
+  } @else {
+    @let live = sequence.live();
+
+    <div class="app-soundboard__grid">
+      @for (player of players.value(); track player.id; let index = $index) {
+        <app-cue-cell
+          [player]="player"
+          [number]="index + 1"
+          [phase]="live?.player?.id === player.id ? live?.phase : undefined"
+          [secondsLeft]="live?.player?.id === player.id ? live?.secondsLeft : undefined"
+          [disabled]="!isReady()"
+          (cued)="onCue(player)"
+        />
+      } @empty {
+        <p class="app-soundboard__message">Er zijn nog geen spelers.</p>
+      }
+    </div>
+  }
+</main>
+
+<app-stop-bar [live]="sequence.live()" (stopped)="sequence.stop()" />

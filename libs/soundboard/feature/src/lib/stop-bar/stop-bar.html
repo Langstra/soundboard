@@ -1,0 +1,19 @@
+@let live = this.live();
+
+<section class="app-stop-bar" aria-label="Nu actief">
+  <div class="app-stop-bar__info">
+    <p class="app-stop-bar__phase">
+      <span aria-live="polite">{{ phaseLabel() }}</span>
+
+      @if (live?.secondsLeft !== undefined) {
+        <span aria-hidden="true"> · nog {{ live?.secondsLeft }} s</span>
+      }
+    </p>
+
+    @if (live) {
+      <p class="app-stop-bar__name">{{ live.player.displayName }}</p>
+    }
+  </div>
+
+  <button class="app-stop-bar__stop" type="button" [disabled]="!live" (click)="stopped.emit()">Stop</button>
+</section>

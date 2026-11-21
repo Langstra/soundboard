@@ -1,0 +1,10 @@
+{
+  "name": "players-data-access",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/players/data-access/src",
+  "prefix": "app",
+  "projectType": "library",
+  "tags": ["scope:players", "type:data-access"],
+  "// targets": "to see all targets run: nx show project players-data-access --web",
+  "targets": {}
+}

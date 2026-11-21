@@ -1,0 +1,123 @@
+:host {
+  display: block;
+}
+
+.app-song-choice {
+  margin-inline: auto;
+  max-inline-size: 30rem;
+  padding: 1.5rem 1rem 3rem;
+}
+
+.app-song-choice__title {
+  border-block-end: var(--rule);
+  font-family: var(--font-display);
+  font-size: 2rem;
+  letter-spacing: 0.04em;
+  line-height: 1.05;
+  margin: 0 0 1.5rem;
+  padding-block-end: 0.75rem;
+  text-transform: uppercase;
+}
+
+.app-song-choice__text,
+.app-song-choice__hint {
+  margin: 0 0 1rem;
+}
+
+.app-song-choice__hint {
+  color: var(--color-ink-muted);
+  font-size: 0.875rem;
+}
+
+.app-song-choice__form {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.app-song-choice__label {
+  display: grid;
+  font-weight: 700;
+  gap: 0.375rem;
+}
+
+.app-song-choice__input {
+  background: var(--color-paper);
+  border: var(--rule);
+  color: var(--color-ink);
+  min-block-size: var(--tap-target);
+  padding-inline: 0.75rem;
+}
+
+.app-song-choice__button {
+  background: var(--color-paper);
+  border: var(--rule);
+  color: var(--color-ink);
+  cursor: pointer;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  min-block-size: var(--tap-target);
+  padding-inline: 1.25rem;
+  text-transform: uppercase;
+}
+
+.app-song-choice__button--primary {
+  background: var(--color-ink);
+  color: var(--color-paper);
+  margin-block-start: 0.5rem;
+}
+
+.app-song-choice__button:disabled {
+  background: transparent;
+  border-color: var(--color-ink-muted);
+  color: var(--color-ink-muted);
+  cursor: default;
+}
+
+.app-song-choice__error,
+.app-song-choice__status {
+  border: var(--rule);
+  font-weight: 700;
+  margin: 0;
+  padding: 0.5rem 0.75rem;
+}
+
+.app-song-choice__status {
+  background: var(--color-ink);
+  color: var(--color-paper);
+}
+
+.app-song-choice__track {
+  margin-block-end: 0.5rem;
+}
+
+.app-song-choice__track {
+  align-items: center;
+  border: var(--rule);
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.5rem;
+}
+
+.app-song-choice__cover {
+  block-size: 4rem;
+  flex: none;
+  inline-size: 4rem;
+}
+
+.app-song-choice__track-text {
+  display: grid;
+  gap: 0.125rem;
+  margin: 0;
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+
+.app-song-choice__input--mono {
+  font-family: var(--font-mono);
+}
+
+.app-song-choice__button--check {
+  margin-block-end: 0.75rem;
+}

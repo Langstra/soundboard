@@ -1,0 +1,123 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-20T00:00:00Z",
+  "title": "Design System: Soundboard",
+  "extensions": {
+    "colorMeta": {
+      "paper": { "role": "neutral", "displayName": "Paper White", "canonical": "hsl(0 0% 100%)", "tonalRamp": ["#262626", "#404040", "#595959", "#737373", "#8c8c8c", "#bfbfbf", "#e6e6e6", "#ffffff"] },
+      "ink": { "role": "neutral", "displayName": "Ink Black", "canonical": "hsl(0 0% 0%)", "tonalRamp": ["#000000", "#141414", "#262626", "#404040", "#595959", "#737373", "#a6a6a6", "#d9d9d9"] },
+      "ink-muted": { "role": "neutral", "displayName": "Muted Ink", "canonical": "hsl(0 0% 33%)", "tonalRamp": ["#1a1a1a", "#2e2e2e", "#424242", "#545454", "#707070", "#8c8c8c", "#b3b3b3", "#d9d9d9"] },
+      "hatch": { "role": "neutral", "displayName": "Hatch Grey", "canonical": "hsl(0 0% 90%)", "tonalRamp": ["#404040", "#595959", "#808080", "#a6a6a6", "#bfbfbf", "#d1d1d1", "#e6e6e6", "#f5f5f5"] },
+      "on-ink": { "role": "neutral", "displayName": "Ink Whisper", "canonical": "hsl(0 0% 100% / 0.8)", "tonalRamp": ["#000000", "#1a1a1a", "#333333", "#4d4d4d", "#666666", "#999999", "#cccccc", "#ffffff"] },
+      "signal-red": { "role": "primary", "displayName": "Signal Red", "canonical": "hsl(3 87% 44%)", "tonalRamp": ["#3d0805", "#5c0d08", "#7d110b", "#a3150c", "#d21a0e", "#ee4a3d", "#f58f86", "#fbd3cf"] },
+      "on-signal": { "role": "neutral", "displayName": "On Signal", "canonical": "hsl(0 0% 100%)", "tonalRamp": ["#262626", "#404040", "#595959", "#737373", "#8c8c8c", "#bfbfbf", "#e6e6e6", "#ffffff"] }
+    },
+    "typographyMeta": {
+      "cue-name": { "displayName": "Cue Name", "purpose": "Player name in a cue cell, container-query sized." },
+      "cue-name-long": { "displayName": "Cue Name (long)", "purpose": "Smaller step for long Player names." },
+      "stop-name": { "displayName": "Stop Name", "purpose": "Live name in the Stop bar." },
+      "title": { "displayName": "Title", "purpose": "Page header title." },
+      "button": { "displayName": "Button", "purpose": "All button labels." },
+      "status": { "displayName": "Status", "purpose": "Cue numbers, statuses, phase line, Spotify label." },
+      "status-live": { "displayName": "Status (live)", "purpose": "Status line inside the live cue cell." },
+      "body": { "displayName": "Body", "purpose": "Notices, labels, errors, empty message." }
+    },
+    "shadows": [],
+    "motion": [
+      { "name": "cue-fade", "value": "1s cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "Live cell eases from red to paper when the cue ends; disabled under prefers-reduced-motion." }
+    ],
+    "breakpoints": [
+      { "name": "sheet-max", "value": "64rem (content width cap via page gutter)" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Cue Cell",
+      "kind": "custom",
+      "refersTo": "cue-cell",
+      "description": "Numbered cue cell: mono number, narrow caps name, mono status.",
+      "html": "<button class=\"ds-cue\"><span class=\"ds-cue-n\">Q01</span><span class=\"ds-cue-name\">Anna</span><span class=\"ds-cue-s\">klaar</span></button>",
+      "css": ".ds-cue{display:flex;flex-direction:column;justify-content:space-between;gap:.25rem;inline-size:14rem;min-block-size:5.25rem;padding:.5rem .625rem;background:var(--color-paper,#fff);color:var(--color-ink,#000);border:0;border-block-end:2px solid var(--color-ink,#000);border-inline-end:2px solid var(--color-ink,#000);text-align:start;cursor:pointer}.ds-cue-n,.ds-cue-s{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:.75rem}.ds-cue-n{font-weight:700}.ds-cue-name{font-family:'Archivo Narrow','Arial Narrow',sans-serif;font-size:2.5rem;font-weight:700;line-height:1;text-transform:uppercase}.ds-cue:hover{background:var(--color-hatch,#e6e6e6)}.ds-cue:focus-visible{outline:3px solid var(--color-ink,#000);outline-offset:-.375rem}"
+    },
+    {
+      "name": "Cue Cell (live)",
+      "kind": "custom",
+      "refersTo": "cue-cell-live",
+      "description": "The one red cell: the live cue.",
+      "html": "<button class=\"ds-cue ds-cue-live\"><span class=\"ds-cue-n\">Q02</span><span class=\"ds-cue-name\">Bram</span><span class=\"ds-cue-s\">GO · speelt nu</span></button>",
+      "css": ".ds-cue-live{display:flex;flex-direction:column;justify-content:space-between;inline-size:14rem;min-block-size:5.25rem;padding:.5rem .625rem;background:hsl(3 87% 44%);color:#fff;border:0;border-block-end:2px solid #000;border-inline-end:2px solid #000;text-align:start}.ds-cue-live .ds-cue-n{font:700 .75rem 'JetBrains Mono',monospace}.ds-cue-live .ds-cue-name{font:700 2.5rem/1 'Archivo Narrow','Arial Narrow',sans-serif;text-transform:uppercase}.ds-cue-live .ds-cue-s{font:700 .875rem 'JetBrains Mono',monospace}"
+    },
+    {
+      "name": "Cue Cell (no song)",
+      "kind": "custom",
+      "refersTo": "cue-cell-no-song",
+      "description": "Hatched cell with muted name; still tappable.",
+      "html": "<button class=\"ds-cue ds-cue-none\"><span class=\"ds-cue-n\">Q03</span><span class=\"ds-cue-name\">Cor</span><span class=\"ds-cue-s\">nog geen nummer</span></button>",
+      "css": ".ds-cue-none{display:flex;flex-direction:column;justify-content:space-between;inline-size:14rem;min-block-size:5.25rem;padding:.5rem .625rem;background:repeating-linear-gradient(135deg,#fff 0 .4375rem,hsl(0 0% 90%) .4375rem .5rem);color:hsl(0 0% 33%);border:0;border-block-end:2px solid #000;border-inline-end:2px solid #000;text-align:start}.ds-cue-none .ds-cue-n,.ds-cue-none .ds-cue-s{font:500 .75rem 'JetBrains Mono',monospace}.ds-cue-none .ds-cue-name{font:700 2.5rem/1 'Archivo Narrow','Arial Narrow',sans-serif;text-transform:uppercase}"
+    },
+    {
+      "name": "Stop Bar",
+      "kind": "custom",
+      "refersTo": "stop-bar",
+      "description": "Black docked bar: phase and live name left, red STOP right.",
+      "html": "<section class=\"ds-stop\"><div><p class=\"ds-stop-phase\">Nu aan de beurt · nog 7 s</p><p class=\"ds-stop-name\">Bram</p></div><button class=\"ds-stop-btn\">Stop</button></section>",
+      "css": ".ds-stop{display:flex;align-items:center;justify-content:space-between;gap:1rem;min-block-size:5.75rem;padding:.875rem 1rem;background:#000;color:hsl(0 0% 100%/.8)}.ds-stop-phase{margin:0;font:500 .75rem 'JetBrains Mono',monospace}.ds-stop-name{margin:.25rem 0 0;color:#fff;font:700 1.875rem/1 'Archivo Narrow','Arial Narrow',sans-serif;text-transform:uppercase}.ds-stop-btn{min-block-size:3rem;min-inline-size:7rem;border:0;background:hsl(3 87% 44%);color:#fff;font:700 1.25rem 'Archivo Narrow','Arial Narrow',sans-serif;letter-spacing:.08em;text-transform:uppercase;cursor:pointer}.ds-stop-btn:focus-visible{outline:3px solid #fff;outline-offset:2px}"
+    },
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Ink fill, paper text, narrow caps; sign-in submit and notice action.",
+      "html": "<button class=\"ds-btn\">Inloggen</button>",
+      "css": ".ds-btn{min-block-size:3rem;padding-inline:1.25rem;border:0;background:#000;color:#fff;font:700 1.25rem 'Archivo Narrow','Arial Narrow',sans-serif;letter-spacing:.08em;text-transform:uppercase;cursor:pointer}.ds-btn:focus-visible{outline:3px solid #000;outline-offset:2px}"
+    },
+    {
+      "name": "Text Field",
+      "kind": "input",
+      "refersTo": "input-field",
+      "description": "Paper field with 2px ink border and bold label.",
+      "html": "<label class=\"ds-field\">E-mailadres<input class=\"ds-input\" type=\"email\"></label>",
+      "css": ".ds-field{display:grid;gap:.375rem;font:700 .875rem system-ui,sans-serif}.ds-input{min-block-size:3rem;padding-inline:.75rem;background:#fff;color:#000;border:2px solid #000;font:inherit}.ds-input:focus-visible{outline:3px solid #000;outline-offset:2px}"
+    },
+    {
+      "name": "Header",
+      "kind": "nav",
+      "refersTo": "header",
+      "description": "Sticky header: narrow caps title left, mono Spotify status right, 2px rule below.",
+      "html": "<header class=\"ds-head\"><h1 class=\"ds-head-t\">Soundboard</h1><p class=\"ds-head-s\">Spotify verbonden</p></header>",
+      "css": ".ds-head{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.875rem 1rem;background:#fff;border-block-end:2px solid #000}.ds-head-t{margin:0;font:700 1.5rem 'Archivo Narrow','Arial Narrow',sans-serif;letter-spacing:.08em;text-transform:uppercase}.ds-head-s{margin:0;font:500 .75rem 'JetBrains Mono',monospace;text-align:end}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Cue Sheet",
+    "overview": "A stage manager's call sheet, not a music player. Every Player is a numbered cue cell on a ruled two-column sheet. The surface is white paper, black type and 2px black rules; nothing is rounded, shadowed or gradient-filled. The operator reads it in a dim room, at arm's length, in a hurry, so contrast and state legibility outrank ornament.\n\nExactly one thing on screen is ever red: the live cue (and the STOP button that ends it). Everything else is black, white or grey. Hierarchy comes from type scale, caps and the ruled grid, not from color or depth.",
+    "keyCharacteristics": [
+      "White sheet, 2px black rules, zero radius, zero shadow.",
+      "One signal red, reserved for live and STOP.",
+      "Condensed bold caps for names and buttons; monospace for cue numbers, statuses and the Spotify label.",
+      "Hatched cells mean \"no song yet\".",
+      "A black Stop bar with 80% white text is docked at the bottom."
+    ],
+    "rules": [
+      { "name": "The One Red Rule", "body": "Signal red appears only on the live cue cell and on STOP. It is never used for errors, warnings, links or decoration; its rarity is how the operator finds the live cue at a glance.", "section": "colors" },
+      { "name": "The Black And White Rule", "body": "Notices, errors and toasts are told apart by position and rule weight (paper with a top rule, or inverted black), never by a new hue.", "section": "colors" },
+      { "name": "The Two Voices Rule", "body": "Narrow caps are for things you tap or name; mono is for things the system reports (numbers, seconds, status). Prose never takes either face.", "section": "typography" },
+      { "name": "The Rule Is The Edge Rule", "body": "Boundaries are 2px solid ink rules (--rule), never shadow, tint or radius.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do draw every boundary as a 2px solid ink rule.",
+      "Do reserve signal red (hsl 3 87% 44%) for the live cue and STOP.",
+      "Do set names and buttons in Archivo Narrow bold uppercase, and numbers, seconds and statuses in JetBrains Mono.",
+      "Do keep tap targets at least 3rem and cells at least 5.25rem tall.",
+      "Do mark no-song cells with the hatch and muted ink, and keep them tappable.",
+      "Do keep copy in Dutch."
+    ],
+    "donts": [
+      "Don't add radius, shadows or gradients (the hatch is the only pattern).",
+      "Don't use red for errors, warnings, links or hover.",
+      "Don't introduce a second accent hue; use inversion (black fill) for emphasis instead.",
+      "Don't set prose in the display or mono faces.",
+      "Don't build a rounded button grid with a player bar; the screen is a sheet, not a music player."
+    ]
+  }
+}

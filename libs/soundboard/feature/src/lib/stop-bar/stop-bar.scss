@@ -1,0 +1,61 @@
+:host {
+  background: var(--color-ink);
+  border-block-start: 0.1875rem solid var(--color-ink);
+  color: var(--color-on-ink);
+  display: block;
+  inset-block-end: 0;
+  min-block-size: var(--stop-bar-height);
+  padding-block-end: env(safe-area-inset-bottom);
+  padding-inline: var(--page-gutter, 1rem);
+  position: sticky;
+}
+
+.app-stop-bar {
+  align-items: center;
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  min-block-size: 5.75rem;
+  padding-block: 0.875rem;
+}
+
+.app-stop-bar__phase {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  margin: 0;
+}
+
+.app-stop-bar__name {
+  color: var(--color-paper);
+  font-family: var(--font-display);
+  font-size: 1.875rem;
+  font-weight: 700;
+  line-height: 1;
+  margin: 0.25rem 0 0;
+  text-transform: uppercase;
+}
+
+.app-stop-bar__stop {
+  background: var(--color-live);
+  border: 0;
+  color: var(--color-on-live);
+  cursor: pointer;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  min-block-size: var(--tap-target);
+  min-inline-size: 7rem;
+  text-transform: uppercase;
+}
+
+.app-stop-bar__stop:focus-visible {
+  outline-color: var(--color-paper);
+}
+
+.app-stop-bar__stop:disabled {
+  background: transparent;
+  border: 2px solid var(--color-on-ink);
+  color: var(--color-on-ink);
+  cursor: default;
+}

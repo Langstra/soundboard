@@ -1,0 +1,37 @@
+{
+  "extraKnownMarketplaces": {
+    "nx-claude-plugins": {
+      "source": {
+        "source": "github",
+        "repo": "nrwl/nx-ai-agents-config"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "nx@nx-claude-plugins": true
+  },
+  "sandbox": {
+    "network": {
+      "allowedDomains": ["www.google-analytics.com"]
+    }
+  },
+  "enableAllProjectMcpServers": true,
+  "permissions": {
+    "deny": [
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Read(./supabase/.env*)",
+      "Read(*.pem)",
+      "Read(*.key)",
+      "Read(./secrets/**)",
+      "Read(./credentials/**)",
+      "Read(service-account*.json)",
+      "Bash(supabase link*)",
+      "Bash(pnpm exec supabase link*)",
+      "Bash(supabase db push*)",
+      "Bash(pnpm exec supabase db push*)",
+      "Bash(npm *)",
+      "Bash(yarn *)"
+    ]
+  }
+}

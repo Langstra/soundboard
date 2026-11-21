@@ -1,0 +1,38 @@
+<main class="app-sign-in">
+  <h1 class="app-sign-in__title">Inloggen</h1>
+
+  <form class="app-sign-in__form" [formRoot]="signInForm">
+    <label class="app-sign-in__label">
+      E-mailadres
+      <input class="app-sign-in__input" type="email" autocomplete="username" [formField]="signInForm.email" />
+    </label>
+
+    @if (signInForm.email().touched()) {
+      @for (error of signInForm.email().errors(); track error.kind) {
+        <p class="app-sign-in__error" role="alert">{{ error.message }}</p>
+      }
+    }
+
+    <label class="app-sign-in__label">
+      Wachtwoord
+      <input
+        class="app-sign-in__input"
+        type="password"
+        autocomplete="current-password"
+        [formField]="signInForm.password"
+      />
+    </label>
+
+    @if (signInForm.password().touched()) {
+      @for (error of signInForm.password().errors(); track error.kind) {
+        <p class="app-sign-in__error" role="alert">{{ error.message }}</p>
+      }
+    }
+
+    @if (signInError(); as message) {
+      <p class="app-sign-in__error" role="alert">{{ message }}</p>
+    }
+
+    <button class="app-sign-in__submit" type="submit">Inloggen</button>
+  </form>
+</main>

@@ -1,0 +1,26 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "rootDir": ".",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "bundler",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "es2015",
+    "module": "esnext",
+    "lib": ["es2020", "dom"],
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "paths": {
+      "@soundboard/supabase/data-access": ["./libs/supabase/data-access/src/index.ts"],
+      "@soundboard/shared/ui": ["./libs/shared/ui/src/index.ts"],
+      "@soundboard/spotify/data-access": ["./libs/spotify/data-access/src/index.ts"],
+      "@soundboard/players/data-access": ["./libs/players/data-access/src/index.ts"],
+      "@soundboard/soundboard/feature": ["./libs/soundboard/feature/src/index.ts"],
+      "@soundboard/song-choice/feature": ["./libs/song-choice/feature/src/index.ts"]
+    }
+  },
+  "exclude": ["node_modules", "tmp"]
+}

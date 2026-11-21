@@ -1,0 +1,9 @@
+{
+  // Assets-only Worker: Cloudflare serves the Angular build and falls back to index.html for client-side routes.
+  "name": "soundboard",
+  "compatibility_date": "2026-11-01",
+  "assets": {
+    "directory": "./dist/apps/web/browser",
+    "not_found_handling": "single-page-application",
+  },
+}

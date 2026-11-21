@@ -1,0 +1,123 @@
+<main class="app-song-choice">
+  @switch (linkState()) {
+    @case ('checking') {
+      <h1 class="app-song-choice__title">Even geduld</h1>
+
+      <p class="app-song-choice__text" role="status">Je link wordt gecontroleerd…</p>
+    }
+
+    @case ('invalid') {
+      <h1 class="app-song-choice__title">Deze link werkt niet meer</h1>
+
+      <p class="app-song-choice__text">Vraag de organisator om een nieuwe link.</p>
+    }
+
+    @case ('failed') {
+      <h1 class="app-song-choice__title">Er ging iets mis</h1>
+
+      <p class="app-song-choice__text">We konden je link niet controleren. Controleer je verbinding.</p>
+
+      <button class="app-song-choice__button" type="button" (click)="onRetry()">Opnieuw proberen</button>
+    }
+
+    @case ('ready') {
+      <h1 class="app-song-choice__title">Hoi {{ player()?.displayName }}, kies je nummer</h1>
+
+      <form class="app-song-choice__form" [formRoot]="choiceForm">
+        <label class="app-song-choice__label">
+          Spotify-link van je nummer
+          <input
+            class="app-song-choice__input app-song-choice__input--mono"
+            type="url"
+            inputmode="url"
+            autocomplete="off"
+            placeholder="https://open.spotify.com/track/…"
+            aria-describedby="url-hint url-error"
+            [attr.aria-invalid]="lookupError() ? 'true' : null"
+            [formField]="choiceForm.url"
+            (blur)="onUrlBlurred()"
+          />
+        </label>
+
+        <p class="app-song-choice__hint" id="url-hint">
+          Tik in Spotify bij het nummer op "Delen" en kies "Link kopiëren".
+        </p>
+
+        <button
+          class="app-song-choice__button app-song-choice__button--check"
+          type="button"
+          [disabled]="isLookingUp()"
+          (click)="onCheckTrack()"
+        >
+          {{ isLookingUp() ? 'Nummer zoeken…' : 'Controleer nummer' }}
+        </button>
+
+        @if (lookupError(); as message) {
+          <p class="app-song-choice__error" id="url-error" role="alert">{{ message }}</p>
+        }
+
+        @if (isTrackVerified()) {
+          @let track = this.track();
+
+          <section class="app-song-choice__track" aria-label="Gevonden nummer">
+            @if (track?.coverUrl) {
+              <img class="app-song-choice__cover" alt="" width="64" height="64" [src]="track?.coverUrl" />
+            }
+
+            <p class="app-song-choice__track-text">
+              <strong>{{ track?.title }}</strong>
+              <span>{{ track?.artist }} · {{ durationLabel() }}</span>
+            </p>
+          </section>
+        }
+
+        <label class="app-song-choice__label">
+          Starttijd (minuten:seconden)
+          <input
+            class="app-song-choice__input app-song-choice__input--mono"
+            type="text"
+            inputmode="numeric"
+            autocomplete="off"
+            placeholder="1:13"
+            aria-describedby="start-error"
+            [attr.aria-invalid]="startError() ? 'true' : null"
+            [formField]="choiceForm.startTime"
+          />
+        </label>
+
+        @if (startError(); as message) {
+          <p class="app-song-choice__error" id="start-error" role="alert">{{ message }}</p>
+        } @else if (choiceForm.startTime().touched() && choiceForm.startTime().errors().length > 0) {
+          <p class="app-song-choice__error" id="start-error" role="alert">
+            {{ choiceForm.startTime().errors()[0].message }}
+          </p>
+        } @else if (startWarning(); as message) {
+          <p class="app-song-choice__hint">{{ message }}</p>
+        }
+
+        <label class="app-song-choice__label">
+          Hoe spreek je je naam uit? (niet verplicht)
+          <input
+            class="app-song-choice__input"
+            type="text"
+            autocomplete="off"
+            placeholder="Bijvoorbeeld Tijs voor Thijs"
+            [formField]="choiceForm.spokenName"
+          />
+        </label>
+
+        <button class="app-song-choice__button app-song-choice__button--primary" type="submit" [disabled]="!canSave()">
+          {{ isSaving() ? 'Opslaan…' : 'Opslaan' }}
+        </button>
+
+        @if (saveHint(); as hint) {
+          <p class="app-song-choice__hint">{{ hint }}</p>
+        }
+
+        @if (saveMessage(); as message) {
+          <p class="app-song-choice__status" role="status">{{ message }}</p>
+        }
+      </form>
+    }
+  }
+</main>
