@@ -28,6 +28,14 @@ jobs:
         env:
           SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
 
+      - name: Show Data API grants
+        # Read-only: proves the app roles can reach the tables (newer projects do not grant them by default).
+        run: >-
+          supabase db query --remote --read-only
+          "select table_name, grantee, privilege_type from information_schema.role_table_grants
+          where table_schema = 'public' and table_name in ('players', 'player_links')
+          and grantee in ('anon', 'authenticated', 'service_role') order by 1, 2, 3"
+
       - name: Set Edge Function secrets
         run: supabase secrets set SPOTIFY_CLIENT_ID="$SPOTIFY_CLIENT_ID" SPOTIFY_CLIENT_SECRET="$SPOTIFY_CLIENT_SECRET" --yes
         env:
