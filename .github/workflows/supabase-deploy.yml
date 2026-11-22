@@ -31,10 +31,12 @@ jobs:
       - name: Verify Data API grants
         # Read-only. Newer Supabase projects do not grant the API roles on new tables, so fail the deploy if missing.
         run: |
-          rows=$(supabase db query --remote --read-only -o json "select table_name, grantee, privilege_type from information_schema.role_table_grants where table_schema = 'public' and table_name in ('players', 'player_links') and grantee in ('authenticated', 'service_role')" 2>/dev/null)
-          echo "$rows" | jq -c '.rows[]'
-          echo "$rows" | jq -e '[.rows[] | select(.table_name == "players" and .grantee == "authenticated" and .privilege_type == "SELECT")] | length > 0' > /dev/null
-          echo "$rows" | jq -e '[.rows[] | select(.table_name == "player_links" and .grantee == "service_role" and .privilege_type == "SELECT")] | length > 0' > /dev/null
+          raw=$(supabase db query --remote --read-only -o json "select table_name, grantee, privilege_type from information_schema.role_table_grants where table_schema = 'public' and table_name in ('players', 'player_links') and grantee in ('authenticated', 'service_role')" 2>/dev/null)
+          echo "$raw" | head -c 1500
+          # The result is either {rows: [...]} (local) or a bare array (hosted).
+          rows=$(echo "$raw" | jq -c 'if type == "array" then (if (.[0] | type) == "object" and (.[0] | has("rows")) then .[0].rows else . end) else .rows end')
+          echo "$rows" | jq -e '[.[] | select(.table_name == "players" and .grantee == "authenticated" and .privilege_type == "SELECT")] | length > 0' > /dev/null
+          echo "$rows" | jq -e '[.[] | select(.table_name == "player_links" and .grantee == "service_role" and .privilege_type == "SELECT")] | length > 0' > /dev/null
 
       - name: Set Edge Function secrets
         run: supabase secrets set SPOTIFY_CLIENT_ID="$SPOTIFY_CLIENT_ID" SPOTIFY_CLIENT_SECRET="$SPOTIFY_CLIENT_SECRET" --yes
