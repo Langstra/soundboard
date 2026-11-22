@@ -25,7 +25,8 @@ jobs:
       - run: supabase link --project-ref "${{ vars.SUPABASE_PROJECT_REF }}"
 
       - name: Apply migrations
-        run: supabase db push
+        # CLI 3.x targets the local stack by default; --remote uses the linked project.
+        run: supabase db push --remote
 
       - name: Set Edge Function secrets
         run: supabase secrets set SPOTIFY_CLIENT_ID="$SPOTIFY_CLIENT_ID" SPOTIFY_CLIENT_SECRET="$SPOTIFY_CLIENT_SECRET"
