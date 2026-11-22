@@ -19,7 +19,8 @@ jobs:
 
       - uses: supabase/setup-cli@v1
         with:
-          version: latest
+          # Pinned: resolving "latest" calls the GitHub API unauthenticated and can hit its rate limit.
+          version: 3.2.0
 
       - run: supabase link --project-ref "${{ vars.SUPABASE_PROJECT_REF }}"
 

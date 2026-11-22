@@ -30,7 +30,7 @@ Each player also needs a row in `public.players` with the same `id` as their aut
 
 ### 2. Cloudflare
 
-1. Create an API token from the "Edit Cloudflare Workers" template and note your account ID.
+1. Create a custom API token limited to your account with two permissions: Account, Workers Scripts, Edit and Account, Account Settings, Read. No zone permissions are needed for a `workers.dev` address; add Zone, Workers Routes, Edit only when you attach your own domain. Note your account ID, shown on the Workers and Pages overview.
 2. The first deploy creates the Worker named in `wrangler.jsonc`. Its address is `https://soundboard.<your-subdomain>.workers.dev`. To use your own domain, add it in the dashboard under the Worker, Settings, Domains and Routes.
 
 ### 3. Spotify
