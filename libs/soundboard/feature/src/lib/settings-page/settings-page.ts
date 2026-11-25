@@ -1,25 +1,14 @@
-import { DOCUMENT } from '@angular/common';
-import {
-  afterNextRender,
-  Component,
-  computed,
-  effect,
-  ElementRef,
-  inject,
-  Injector,
-  signal,
-  viewChild,
-} from '@angular/core';
-import { form, FormField, max, min, required } from '@angular/forms/signals';
+import { Component, computed, effect, inject, signal, viewChild } from '@angular/core';
+import { debounce, form, FormField, max, min, required, validate } from '@angular/forms/signals';
 import { Router, RouterLink } from '@angular/router';
-import { Player, PlayerLinksService, PlayersService } from '@soundboard/players/data-access';
 import { SpotifyAuthService, SpotifyPlaybackService } from '@soundboard/spotify/data-access';
 import { AuthService } from '@soundboard/supabase/data-access';
 import { PlayDurationService } from '../play-duration.service';
+import { PlayersSection } from '../players-section/players-section';
 
 @Component({
   selector: 'app-settings-page',
-  imports: [FormField, RouterLink],
+  imports: [FormField, PlayersSection, RouterLink],
   templateUrl: './settings-page.html',
   styleUrl: './settings-page.scss',
 })
@@ -29,32 +18,18 @@ export class SettingsPage {
   private readonly spotifyAuth = inject(SpotifyAuthService);
   private readonly playback = inject(SpotifyPlaybackService);
   private readonly playDuration = inject(PlayDurationService);
-  private readonly links = inject(PlayerLinksService);
-  private readonly document = inject(DOCUMENT);
 
-  protected readonly players = inject(PlayersService).players;
-  private readonly injector = inject(Injector);
-  private readonly linkField = viewChild<ElementRef<HTMLInputElement>>('linkField');
-
-  protected readonly generatedLink = signal<{ playerId: string; playerName: string; url: string } | undefined>(
-    undefined,
-  );
-  protected readonly pendingPlayerId = signal<string | undefined>(undefined);
-  protected readonly linkMessage = signal<string | undefined>(undefined);
-  protected readonly linkError = signal<string | undefined>(undefined);
-  private readonly hasCopied = signal(false);
-  private readonly isCloseWarned = signal(false);
-
-  protected readonly closeLabel = computed(() =>
-    this.isCloseWarned() && !this.hasCopied() ? 'Toch sluiten' : 'Sluiten',
-  );
+  private readonly playersSection = viewChild.required(PlayersSection);
 
   protected readonly minSeconds = PlayDurationService.minSeconds;
   protected readonly maxSeconds = PlayDurationService.maxSeconds;
+  protected readonly savedSeconds = this.playDuration.seconds;
 
   private readonly settings = signal({ seconds: this.playDuration.seconds() });
 
   protected readonly settingsForm = form(this.settings, (path) => {
+    // Waits for a pause in typing, so the first digit of "15" is not judged on its own.
+    debounce(path.seconds, 600);
     required(path.seconds, { message: 'Vul een aantal seconden in.' });
     min(path.seconds, PlayDurationService.minSeconds, {
       message: `Kies minstens ${PlayDurationService.minSeconds} seconden.`,
@@ -62,7 +37,14 @@ export class SettingsPage {
     max(path.seconds, PlayDurationService.maxSeconds, {
       message: `Kies hoogstens ${PlayDurationService.maxSeconds} seconden.`,
     });
+    validate(path.seconds, ({ value }) =>
+      Number.isFinite(value()) && !Number.isInteger(value())
+        ? { kind: 'integer', message: 'Vul een heel aantal seconden in.' }
+        : undefined,
+    );
   });
+
+  protected readonly durationError = computed(() => this.settingsForm.seconds().errors()[0]?.message);
 
   protected readonly isSpotifyConnected = computed(() => this.spotifyAuth.status() === 'signed-in');
 
@@ -70,73 +52,14 @@ export class SettingsPage {
     effect(() => {
       const seconds = this.settings().seconds;
 
-      if (this.settingsForm.seconds().valid() && Number.isInteger(seconds)) {
+      if (this.settingsForm.seconds().valid()) {
         this.playDuration.setSeconds(seconds);
       }
     });
   }
 
-  protected onAskNewLink(player: Player): void {
-    this.pendingPlayerId.set(player.id);
-  }
-
-  protected onCancelNewLink(): void {
-    this.pendingPlayerId.set(undefined);
-  }
-
-  protected async onNewLink(player: Player): Promise<void> {
-    this.pendingPlayerId.set(undefined);
-    this.linkMessage.set(undefined);
-    this.linkError.set(undefined);
-
-    try {
-      const token = await this.links.regenerate(player.id);
-      this.hasCopied.set(false);
-      this.isCloseWarned.set(false);
-      this.generatedLink.set({
-        playerId: player.id,
-        playerName: player.displayName,
-        url: `${this.document.location.origin}/p/${token}`,
-      });
-      afterNextRender(() => this.linkField()?.nativeElement.focus(), { injector: this.injector });
-    } catch {
-      this.generatedLink.set(undefined);
-      this.linkError.set(`Een nieuwe link voor ${player.displayName} maken is niet gelukt.`);
-    }
-  }
-
-  protected async onCopyLink(): Promise<void> {
-    const link = this.generatedLink();
-
-    if (!link) {
-      return;
-    }
-
-    try {
-      await navigator.clipboard.writeText(link.url);
-      this.hasCopied.set(true);
-      this.linkError.set(undefined);
-      this.linkMessage.set('Link gekopieerd.');
-    } catch {
-      this.linkMessage.set(undefined);
-      this.linkError.set('Kopiëren is niet gelukt. Selecteer de link en kopieer hem zelf.');
-    }
-  }
-
-  protected onCloseLink(): void {
-    if (!this.hasCopied() && !this.isCloseWarned()) {
-      this.isCloseWarned.set(true);
-      this.linkError.set('Je hebt de link nog niet gekopieerd. Sluiten maakt hem onzichtbaar.');
-      return;
-    }
-
-    this.generatedLink.set(undefined);
-    this.linkMessage.set(undefined);
-    this.linkError.set(undefined);
-  }
-
-  protected onSelectLink(event: FocusEvent): void {
-    (event.target as HTMLInputElement).select();
+  canLeave(): boolean {
+    return this.playersSection().confirmLeave();
   }
 
   protected onSpotifyLogin(): void {
@@ -149,8 +72,12 @@ export class SettingsPage {
   }
 
   protected async onSignOut(): Promise<void> {
+    if (!this.canLeave()) {
+      return;
+    }
+
     this.playback.disconnect();
     await this.auth.signOut();
-    await this.router.navigateByUrl('/inloggen');
+    await this.router.navigateByUrl('/operator/inloggen');
   }
 }

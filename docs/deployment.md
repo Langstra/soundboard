@@ -18,7 +18,7 @@ A push to `main` runs the same checks as a pull request (`pnpm check`), then bui
 
 1. Create a project and note its project ref, URL and anon (publishable) key.
 2. Under Authentication, URL Configuration, set the Site URL to the final site URL (see step 2).
-3. Create the operator and the players in Authentication, then mark the operator in SQL:
+3. Create the operator in Authentication, then mark the operator in SQL. Players are created in the app, under Instellingen:
 
 ```sql
 update auth.users
@@ -26,7 +26,14 @@ set raw_app_meta_data = raw_app_meta_data || '{"role": "operator"}'
 where email = 'operator@example.com';
 ```
 
-Each player also needs a row in `public.players` with the same `id` as their auth user. The migrations create the tables; the seed file is for local development only and is never applied remotely.
+The migrations create the tables; the seed file is for local development only and is never applied remotely.
+
+4. Under Authentication, Emails, SMTP Settings, enable custom SMTP. Supabase's built-in mail only reaches members of your own organisation, so players would never get a code. With AhaSend:
+   - Host `send.ahasend.com`, port `587` (or `465`), and an SMTP credential created in AhaSend (not an API key).
+   - Verify a sending domain in AhaSend and add the SPF, DKIM and DMARC records it shows. Use a subdomain such as `mail.langstra.nl` and send from `soundboard@mail.langstra.nl`.
+   - New AhaSend accounts have low hourly limits that grow over time, so check them before an event.
+5. Under Authentication, Emails, Templates, paste `supabase/templates/login-code.html` into the "Magic link" template and `supabase/templates/claim-code.html` into the "Change email address" template, with the subjects from `supabase/config.toml`. The templates show the 6-digit code instead of a link.
+6. Under Authentication, Sign In / Providers, Email, turn off "Secure email change". A player's first email replaces a placeholder address nobody can read, so a code to the old address can never be entered. See ADR 0002.
 
 ### 2. Cloudflare
 
@@ -59,7 +66,7 @@ Never put the `service_role` key anywhere in GitHub variables. The build script 
 
 ### 5. First deploy
 
-1. Run the "Deploy Supabase" workflow manually. It applies migrations, sets the Edge Function secrets and deploys the three functions.
+1. Run the "Deploy Supabase" workflow manually. It applies migrations, sets the Edge Function secrets and deploys the Edge Functions.
 2. Push to `main` (or run "Deploy" manually). The site goes live.
 
 ## Day to day

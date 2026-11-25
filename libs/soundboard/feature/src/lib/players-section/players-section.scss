@@ -1,0 +1,126 @@
+@use '../settings-controls';
+
+.app-players__stack {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.app-players__link {
+  background: var(--color-ink);
+  color: var(--color-on-ink);
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: minmax(0, 1fr);
+  padding: 0.75rem;
+}
+
+.app-players__link-title {
+  color: var(--color-paper);
+  font-weight: 700;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.app-players__link-status {
+  font-weight: 700;
+  margin: 0;
+}
+
+.app-players__link-alert {
+  border: var(--rule-on-ink);
+  font-weight: 700;
+  margin: 0;
+  padding: 0.5rem 0.75rem;
+}
+
+.app-players__link :focus-visible {
+  outline-color: var(--color-paper);
+}
+
+.app-players__button--inverse {
+  background: var(--color-paper);
+  border-color: var(--color-paper);
+  color: var(--color-ink);
+}
+
+.app-players__button--inverse-outline {
+  background: transparent;
+  border: var(--rule-on-ink);
+  color: var(--color-on-ink);
+}
+
+.app-players__status {
+  font-weight: 700;
+  margin: 0;
+}
+
+// Stays in the document so that screen readers notice new text.
+.app-players__status:empty {
+  margin-block-start: -0.75rem;
+}
+
+.app-players__list {
+  border-block-start: var(--rule);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.app-players__player {
+  border-block-end: var(--rule);
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: minmax(0, 1fr);
+  padding-block: 0.5rem;
+}
+
+.app-players__summary {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.75rem;
+  justify-content: space-between;
+}
+
+.app-players__identity {
+  display: grid;
+  flex: 1 1 8rem;
+  margin: 0;
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+
+.app-players__name {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.app-players__email {
+  color: var(--color-ink-muted);
+  font-size: 0.875rem;
+}
+
+.app-players__actions {
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(8.5rem, 100%), 1fr));
+}
+
+.app-players__actions .app-settings__button {
+  padding-inline: 0.5rem;
+}
+
+.app-players__choices {
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.app-players__question {
+  font-weight: 700;
+  margin: 0;
+  overflow-wrap: anywhere;
+}

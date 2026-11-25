@@ -26,106 +26,24 @@
 
     <label class="app-settings__label">
       Seconden dat een nummer speelt ({{ minSeconds }} tot {{ maxSeconds }})
-      <input class="app-settings__input" type="number" inputmode="numeric" [formField]="settingsForm.seconds" />
+      <input
+        class="app-settings__input"
+        type="number"
+        inputmode="numeric"
+        [attr.aria-invalid]="durationError() ? 'true' : null"
+        [attr.aria-describedby]="durationError() ? 'duration-error' : null"
+        [formField]="settingsForm.seconds"
+      />
     </label>
 
-    @for (error of settingsForm.seconds().errors(); track error.kind) {
-      <p class="app-settings__error" role="alert">{{ error.message }}</p>
+    @if (durationError(); as message) {
+      <p class="app-settings__error" id="duration-error" role="alert">
+        {{ message }} Niet opgeslagen: een nummer speelt nu {{ savedSeconds() }} seconden.
+      </p>
     }
   </section>
 
-  <section class="app-settings__section" aria-labelledby="players-heading">
-    <h2 class="app-settings__heading" id="players-heading">Spelers</h2>
-
-    <p class="app-settings__text">
-      Een nieuwe link maakt de vorige link van die speler ongeldig. De link wordt maar één keer getoond.
-    </p>
-
-    @if (linkError(); as message) {
-      @if (!generatedLink()) {
-        <p class="app-settings__error" role="alert">{{ message }}</p>
-      }
-    }
-
-    <ul class="app-settings__players">
-      @for (player of players.value(); track player.id) {
-        <li class="app-settings__player">
-          <span class="app-settings__player-name">{{ player.displayName }}</span>
-
-          @if (pendingPlayerId() === player.id) {
-            <p class="app-settings__confirm">
-              Zeker weten? De vorige link van {{ player.displayName }} werkt dan niet meer.
-            </p>
-
-            <div class="app-settings__link-actions">
-              <button class="app-settings__button" type="button" (click)="onNewLink(player)">Ja, nieuwe link</button>
-
-              <button
-                class="app-settings__button app-settings__button--secondary"
-                type="button"
-                (click)="onCancelNewLink()"
-              >
-                Annuleren
-              </button>
-            </div>
-          } @else {
-            <button
-              class="app-settings__button app-settings__button--secondary"
-              type="button"
-              [attr.aria-label]="'Nieuwe link voor ' + player.displayName"
-              (click)="onAskNewLink(player)"
-            >
-              Nieuwe link
-            </button>
-          }
-
-          @if (generatedLink(); as link) {
-            @if (link.playerId === player.id) {
-              <div class="app-settings__link">
-                <p class="app-settings__link-title">Link voor {{ link.playerName }}. Alleen nu zichtbaar.</p>
-
-                <input
-                  class="app-settings__input app-settings__input--link"
-                  #linkField
-                  type="text"
-                  readonly
-                  [attr.aria-label]="'Link voor ' + link.playerName"
-                  [value]="link.url"
-                  (focus)="onSelectLink($event)"
-                />
-
-                @if (linkMessage(); as message) {
-                  <p class="app-settings__link-status" role="status">{{ message }}</p>
-                }
-
-                @if (linkError(); as message) {
-                  <p class="app-settings__link-alert" role="alert">{{ message }}</p>
-                }
-
-                <div class="app-settings__link-actions">
-                  <button
-                    class="app-settings__button app-settings__button--inverse"
-                    type="button"
-                    (click)="onCopyLink()"
-                  >
-                    Kopieer
-                  </button>
-
-                  <button
-                    class="app-settings__button app-settings__button--inverse-outline"
-                    type="button"
-                    (click)="onCloseLink()"
-                  >
-                    {{ closeLabel() }}
-                  </button>
-                </div>
-              </div>
-            }
-          }
-        </li>
-      }
-    </ul>
-  </section>
+  <app-players-section />
 
   <section class="app-settings__section" aria-labelledby="account-heading">
     <h2 class="app-settings__heading" id="account-heading">Account</h2>

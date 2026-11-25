@@ -1,0 +1,23 @@
+<main class="app-personal-link">
+  @switch (linkState()) {
+    @case ('checking') {
+      <h1 class="app-personal-link__title">Even geduld</h1>
+
+      <p class="app-personal-link__text" role="status">Je link wordt gecontroleerd…</p>
+    }
+
+    @case ('invalid') {
+      <h1 class="app-personal-link__title">Deze link werkt niet meer</h1>
+
+      <p class="app-personal-link__text">Vraag de organisator om een nieuwe link.</p>
+    }
+
+    @case ('failed') {
+      <h1 class="app-personal-link__title">Er ging iets mis</h1>
+
+      <p class="app-personal-link__text">We konden je link niet controleren. Controleer je verbinding.</p>
+
+      <button class="app-personal-link__button" type="button" (click)="onRetry()">Opnieuw proberen</button>
+    }
+  }
+</main>

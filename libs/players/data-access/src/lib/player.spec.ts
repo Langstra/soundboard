@@ -1,10 +1,27 @@
 import { toPlayer } from './player';
 
-const row = { id: 'p1', display_name: 'Daan', spoken_name: null, spotify_track_id: null, start_seconds: null };
+const row = {
+  id: 'p1',
+  display_name: 'Daan',
+  email: null,
+  spoken_name: null,
+  spotify_track_id: null,
+  start_seconds: null,
+};
 
 describe('toPlayer', () => {
   it('maps a row without a song to a player without a song choice', () => {
-    expect(toPlayer(row)).toEqual({ id: 'p1', displayName: 'Daan', spokenName: undefined, songChoice: undefined });
+    expect(toPlayer(row)).toEqual({
+      id: 'p1',
+      displayName: 'Daan',
+      email: undefined,
+      spokenName: undefined,
+      songChoice: undefined,
+    });
+  });
+
+  it('maps a claimed email', () => {
+    expect(toPlayer({ ...row, email: 'daan@example.com' }).email).toBe('daan@example.com');
   });
 
   it('maps a complete song choice and the spoken name', () => {

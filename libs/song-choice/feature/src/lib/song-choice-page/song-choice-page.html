@@ -1,23 +1,23 @@
 <main class="app-song-choice">
-  @switch (linkState()) {
-    @case ('checking') {
+  @switch (pageState()) {
+    @case ('loading') {
       <h1 class="app-song-choice__title">Even geduld</h1>
 
-      <p class="app-song-choice__text" role="status">Je link wordt gecontroleerd…</p>
-    }
-
-    @case ('invalid') {
-      <h1 class="app-song-choice__title">Deze link werkt niet meer</h1>
-
-      <p class="app-song-choice__text">Vraag de organisator om een nieuwe link.</p>
+      <p class="app-song-choice__text" role="status">Je gegevens worden geladen…</p>
     }
 
     @case ('failed') {
       <h1 class="app-song-choice__title">Er ging iets mis</h1>
 
-      <p class="app-song-choice__text">We konden je link niet controleren. Controleer je verbinding.</p>
+      <p class="app-song-choice__text">We konden je gegevens niet laden. Controleer je verbinding.</p>
 
       <button class="app-song-choice__button" type="button" (click)="onRetry()">Opnieuw proberen</button>
+    }
+
+    @case ('claim') {
+      <h1 class="app-song-choice__title">Hoi {{ player()?.displayName }}, koppel je e-mailadres</h1>
+
+      <app-email-claim (claimed)="onClaimed()" />
     }
 
     @case ('ready') {

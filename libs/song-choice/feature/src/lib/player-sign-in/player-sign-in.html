@@ -1,0 +1,12 @@
+<main class="app-player-sign-in">
+  <h1 class="app-player-sign-in__title">Inloggen</h1>
+
+  <p class="app-player-sign-in__text">
+    Vul het e-mailadres in dat je hebt gekoppeld. Je krijgt een code om in te loggen. Heb je nog geen e-mailadres
+    gekoppeld? Gebruik dan je persoonlijke link.
+  </p>
+
+  <app-email-code-form [requestCode]="requestCode" [confirmCode]="confirmCode" (completed)="onSignedIn()" />
+
+  <a class="app-player-sign-in__operator" routerLink="/operator/inloggen">Login als operator</a>
+</main>

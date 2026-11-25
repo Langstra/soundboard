@@ -53,6 +53,7 @@ export type Database = {
         Row: {
           created_at: string;
           display_name: string;
+          email: string | null;
           id: string;
           spoken_name: string | null;
           spotify_track_id: string | null;
@@ -62,6 +63,7 @@ export type Database = {
         Insert: {
           created_at?: string;
           display_name: string;
+          email?: string | null;
           id: string;
           spoken_name?: string | null;
           spotify_track_id?: string | null;
@@ -70,6 +72,7 @@ export type Database = {
         Update: {
           created_at?: string;
           display_name?: string;
+          email?: string | null;
           id?: string;
           spoken_name?: string | null;
           spotify_track_id?: string | null;

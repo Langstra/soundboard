@@ -35,3 +35,11 @@ _Avoid_: Pronunciation, nickname
 **Play Duration**:
 The number of seconds a song plays after a player is triggered, set by the operator in settings.
 _Avoid_: Clip length, timeout
+
+**Email Claim**:
+A player's first-time registration of their own email address, confirmed with a Login Code. Until it happens the player is unclaimed and can only sign in with their Personal Link.
+_Avoid_: Sign-up, email verification
+
+**Login Code**:
+A short code emailed to a player's claimed address that signs them in without their Personal Link.
+_Avoid_: OTP, password, magic link

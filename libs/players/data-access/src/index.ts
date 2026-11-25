@@ -1,4 +1,6 @@
 export * from './lib/player';
+export * from './lib/player-account.service';
+export * from './lib/player-admin.service';
 export * from './lib/player-links.service';
 export * from './lib/player-song.service';
 export * from './lib/players.service';

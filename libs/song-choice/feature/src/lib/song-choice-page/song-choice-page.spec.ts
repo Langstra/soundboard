@@ -1,15 +1,13 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Player, PlayerSongService, TrackSummary } from '@soundboard/players/data-access';
-import { FunctionCallError } from '@soundboard/supabase/data-access';
+import { Player, PlayerAccountService, PlayerSongService, TrackSummary } from '@soundboard/players/data-access';
 import { SongChoicePage } from './song-choice-page';
 
-const player: Player = { id: 'p1', displayName: 'Daan' };
+const player: Player = { id: 'p1', displayName: 'Daan', email: 'daan@example.com' };
 const track: TrackSummary = { trackId: '4cOdK2wGLETKBW3PvgPWqT', title: 'Song', artist: 'Band', durationSeconds: 222 };
 const trackUrl = `https://open.spotify.com/track/${track.trackId}?si=x`;
 
 describe('SongChoicePage', () => {
   const songs = {
-    signInWithLink: vi.fn(),
     loadOwnPlayer: vi.fn(),
     lookupTrack: vi.fn(),
     save: vi.fn(),
@@ -52,27 +50,31 @@ describe('SongChoicePage', () => {
 
   async function open(): Promise<void> {
     fixture = TestBed.createComponent(SongChoicePage);
-    fixture.componentRef.setInput('token', 'some-token');
     await settle();
   }
 
   beforeEach(() => {
     vi.clearAllMocks();
-    songs.signInWithLink.mockResolvedValue(undefined);
     songs.loadOwnPlayer.mockResolvedValue(player);
     songs.lookupTrack.mockResolvedValue(track);
     songs.save.mockResolvedValue(undefined);
-    TestBed.configureTestingModule({ providers: [{ provide: PlayerSongService, useValue: songs }] });
+    TestBed.configureTestingModule({
+      providers: [
+        { provide: PlayerSongService, useValue: songs },
+        { provide: PlayerAccountService, useValue: {} },
+      ],
+    });
   });
 
-  it('explains an invalid link', async () => {
-    songs.signInWithLink.mockRejectedValue(new FunctionCallError('invalid_link'));
+  it('asks a player without an email to claim one first', async () => {
+    songs.loadOwnPlayer.mockResolvedValue({ ...player, email: undefined });
     await open();
 
-    expect(page().textContent).toContain('Deze link werkt niet meer');
+    expect(page().querySelector('h1')?.textContent).toContain('koppel je e-mailadres');
+    expect(page().textContent).not.toContain('Spotify-link');
   });
 
-  it('greets the player once the link is accepted', async () => {
+  it('greets a player who has claimed an email', async () => {
     await open();
 
     expect(page().querySelector('h1')?.textContent).toContain('Hoi Daan');

@@ -27,7 +27,7 @@ export class PlayerSongService {
   async loadOwnPlayer(): Promise<Player> {
     const { data, error } = await this.supabase
       .from('players')
-      .select('id, display_name, spoken_name, spotify_track_id, start_seconds')
+      .select('id, display_name, email, spoken_name, spotify_track_id, start_seconds')
       .single<PlayerRow>();
 
     if (error) {

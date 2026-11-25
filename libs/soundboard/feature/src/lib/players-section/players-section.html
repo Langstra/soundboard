@@ -1,0 +1,257 @@
+<section class="app-settings__section" aria-labelledby="players-heading">
+  <h2 class="app-settings__heading" id="players-heading" tabindex="-1" data-focus="players-heading">Spelers</h2>
+
+  <form class="app-players__stack" [formRoot]="newPlayerForm">
+    <label class="app-settings__label">
+      Nieuwe speler
+      <input
+        class="app-settings__input app-settings__input--text"
+        type="text"
+        autocomplete="off"
+        placeholder="Naam van de speler"
+        data-focus="new-player"
+        [attr.aria-invalid]="newPlayerError() ? 'true' : null"
+        [attr.aria-describedby]="newPlayerError() ? 'new-player-error' : null"
+        [formField]="newPlayerForm.name"
+      />
+    </label>
+
+    @if (newPlayerError(); as message) {
+      <p class="app-settings__error" id="new-player-error" role="alert">{{ message }}</p>
+    }
+
+    <button class="app-settings__button" type="submit" [attr.aria-disabled]="busy() ? 'true' : null">
+      {{ busy() === 'create' ? 'Toevoegen…' : 'Toevoegen' }}
+    </button>
+  </form>
+
+  @if (generatedLink(); as link) {
+    <div class="app-players__link">
+      <p class="app-players__link-title" id="link-title">Link voor {{ link.playerName }}. Alleen nu zichtbaar.</p>
+
+      <input
+        class="app-settings__input"
+        type="text"
+        readonly
+        data-focus="link-field"
+        aria-describedby="link-title"
+        [attr.aria-label]="'Link voor ' + link.playerName"
+        [value]="link.url"
+        (focus)="onSelectLink($event)"
+      />
+
+      @if (linkMessage(); as message) {
+        <p class="app-players__link-status" role="status">{{ message }}</p>
+      }
+
+      @if (linkError(); as message) {
+        <p class="app-players__link-alert" role="alert">{{ message }}</p>
+      }
+
+      <div class="app-players__choices">
+        <button class="app-settings__button app-players__button--inverse" type="button" (click)="onCopyLink()">
+          Kopieer
+        </button>
+
+        <button class="app-settings__button app-players__button--inverse-outline" type="button" (click)="onCloseLink()">
+          {{ closeLabel() }}
+        </button>
+      </div>
+    </div>
+  }
+
+  <p class="app-players__status" role="status" tabindex="-1" data-focus="status">{{ status() }}</p>
+
+  @if (players.error()) {
+    <p class="app-settings__error" role="alert">De spelers konden niet geladen worden.</p>
+
+    <button class="app-settings__button app-settings__button--secondary" type="button" (click)="onRetry()">
+      Opnieuw proberen
+    </button>
+  } @else if (players.status() === 'loading') {
+    <p class="app-settings__text" role="status">Spelers laden…</p>
+  } @else {
+    <ul class="app-players__list">
+      @for (player of players.value(); track player.id) {
+        @let row = openRow()?.playerId === player.id ? openRow() : undefined;
+
+        <li class="app-players__player">
+          <div class="app-players__summary">
+            <p class="app-players__identity">
+              <span class="app-players__name">{{ player.displayName }}</span>
+              <span class="app-players__email">{{ player.email ?? 'Nog geen e-mailadres gekoppeld' }}</span>
+            </p>
+
+            <button
+              class="app-settings__button app-settings__button--secondary"
+              type="button"
+              [attr.data-focus]="'row-' + player.id"
+              [attr.aria-expanded]="row !== undefined"
+              [attr.aria-label]="'Acties voor ' + player.displayName"
+              [attr.aria-disabled]="busy() ? 'true' : null"
+              (click)="onToggleRow(player)"
+            >
+              Acties
+            </button>
+          </div>
+
+          @switch (row?.mode) {
+            @case ('actions') {
+              <div class="app-players__actions">
+                <button
+                  class="app-settings__button app-settings__button--secondary"
+                  type="button"
+                  [attr.data-focus]="'name-' + player.id"
+                  [attr.aria-label]="'Naam van ' + player.displayName + ' wijzigen'"
+                  [attr.aria-disabled]="busy() ? 'true' : null"
+                  (click)="onEdit(player, 'name')"
+                >
+                  Naam
+                </button>
+
+                <button
+                  class="app-settings__button app-settings__button--secondary"
+                  type="button"
+                  [attr.data-focus]="'email-' + player.id"
+                  [attr.aria-label]="'E-mailadres van ' + player.displayName + ' wijzigen'"
+                  [attr.aria-disabled]="busy() ? 'true' : null"
+                  (click)="onEdit(player, 'email')"
+                >
+                  E-mail
+                </button>
+
+                <button
+                  class="app-settings__button app-settings__button--secondary"
+                  type="button"
+                  [attr.data-focus]="'link-' + player.id"
+                  [attr.aria-label]="'Nieuwe link voor ' + player.displayName"
+                  [attr.aria-disabled]="busy() ? 'true' : null"
+                  (click)="onAsk(player, 'link')"
+                >
+                  Nieuwe link
+                </button>
+
+                <button
+                  class="app-settings__button app-settings__button--secondary"
+                  type="button"
+                  [attr.data-focus]="'delete-' + player.id"
+                  [attr.aria-label]="player.displayName + ' verwijderen'"
+                  [attr.aria-disabled]="busy() ? 'true' : null"
+                  (click)="onAsk(player, 'delete')"
+                >
+                  Verwijder
+                </button>
+              </div>
+            }
+
+            @case ('link') {
+              <p class="app-players__question" id="row-question">
+                Zeker weten? De vorige link van {{ player.displayName }} werkt dan niet meer.
+              </p>
+
+              @if (rowError(); as message) {
+                <p class="app-settings__error" role="alert">{{ message }}</p>
+              }
+
+              <div class="app-players__choices">
+                <button
+                  class="app-settings__button"
+                  type="button"
+                  aria-describedby="row-question"
+                  [attr.aria-disabled]="busy() ? 'true' : null"
+                  (click)="onNewLink(player)"
+                >
+                  {{ busy() === 'link' ? 'Link maken…' : 'Ja, nieuwe link' }}
+                </button>
+
+                <button
+                  class="app-settings__button app-settings__button--secondary"
+                  type="button"
+                  data-focus="row-cancel"
+                  aria-describedby="row-question"
+                  [attr.aria-disabled]="busy() ? 'true' : null"
+                  (click)="onCancel()"
+                >
+                  Annuleren
+                </button>
+              </div>
+            }
+
+            @case ('delete') {
+              <p class="app-players__question" id="row-question">
+                Zeker weten? {{ player.displayName }} en het gekozen nummer worden verwijderd.
+              </p>
+
+              @if (rowError(); as message) {
+                <p class="app-settings__error" role="alert">{{ message }}</p>
+              }
+
+              <div class="app-players__choices">
+                <button
+                  class="app-settings__button"
+                  type="button"
+                  aria-describedby="row-question"
+                  [attr.aria-disabled]="busy() ? 'true' : null"
+                  (click)="onDelete(player)"
+                >
+                  {{ busy() === 'delete' ? 'Verwijderen…' : 'Ja, verwijder' }}
+                </button>
+
+                <button
+                  class="app-settings__button app-settings__button--secondary"
+                  type="button"
+                  data-focus="row-cancel"
+                  aria-describedby="row-question"
+                  [attr.aria-disabled]="busy() ? 'true' : null"
+                  (click)="onCancel()"
+                >
+                  Annuleren
+                </button>
+              </div>
+            }
+
+            @case (undefined) {}
+
+            @default {
+              <form class="app-players__stack" [formRoot]="editForm">
+                <label class="app-settings__label">
+                  {{ row?.mode === 'name' ? 'Nieuwe naam voor' : 'E-mailadres van' }} {{ player.displayName }}
+                  <input
+                    class="app-settings__input app-settings__input--text"
+                    autocomplete="off"
+                    data-focus="row-input"
+                    [type]="row?.mode === 'name' ? 'text' : 'email'"
+                    [attr.aria-invalid]="editError() ? 'true' : null"
+                    [attr.aria-describedby]="editError() ? 'edit-error' : null"
+                    [formField]="editForm.value"
+                  />
+                </label>
+
+                @if (editError(); as message) {
+                  <p class="app-settings__error" id="edit-error" role="alert">{{ message }}</p>
+                }
+
+                <div class="app-players__choices">
+                  <button class="app-settings__button" type="submit" [attr.aria-disabled]="busy() ? 'true' : null">
+                    {{ busy() === 'save' ? 'Opslaan…' : 'Opslaan' }}
+                  </button>
+
+                  <button
+                    class="app-settings__button app-settings__button--secondary"
+                    type="button"
+                    [attr.aria-disabled]="busy() ? 'true' : null"
+                    (click)="onCancel()"
+                  >
+                    Annuleren
+                  </button>
+                </div>
+              </form>
+            }
+          }
+        </li>
+      } @empty {
+        <li class="app-players__player">Nog geen spelers. Voeg hierboven de eerste toe.</li>
+      }
+    </ul>
+  }
+</section>

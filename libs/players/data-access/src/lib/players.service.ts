@@ -2,7 +2,7 @@ import { DestroyRef, inject, resource, Service } from '@angular/core';
 import { injectSupabase } from '@soundboard/supabase/data-access';
 import { Player, toPlayer } from './player';
 
-const PLAYER_COLUMNS = 'id, display_name, spoken_name, spotify_track_id, start_seconds';
+const PLAYER_COLUMNS = 'id, display_name, email, spoken_name, spotify_track_id, start_seconds';
 
 @Service()
 export class PlayersService {

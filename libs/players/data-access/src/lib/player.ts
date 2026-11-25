@@ -6,6 +6,7 @@ export type SongChoice = {
 export type Player = {
   id: string;
   displayName: string;
+  email?: string;
   spokenName?: string;
   songChoice?: SongChoice;
 };
@@ -13,6 +14,7 @@ export type Player = {
 export type PlayerRow = {
   id: string;
   display_name: string;
+  email: string | null;
   spoken_name: string | null;
   spotify_track_id: string | null;
   start_seconds: number | null;
@@ -22,6 +24,7 @@ export function toPlayer(row: PlayerRow): Player {
   return {
     id: row.id,
     displayName: row.display_name,
+    email: row.email ?? undefined,
     spokenName: row.spoken_name ?? undefined,
     songChoice:
       row.spotify_track_id !== null && row.start_seconds !== null

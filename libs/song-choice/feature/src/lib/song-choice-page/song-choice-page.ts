@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, input, signal, untracked } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { form, FormField, FormRoot, required } from '@angular/forms/signals';
 import {
   formatTime,
@@ -9,8 +9,9 @@ import {
   TrackSummary,
 } from '@soundboard/players/data-access';
 import { FunctionCallError } from '@soundboard/supabase/data-access';
+import { EmailClaim } from '../email-claim/email-claim';
 
-type LinkState = 'checking' | 'invalid' | 'failed' | 'ready';
+type PageState = 'loading' | 'failed' | 'claim' | 'ready';
 
 const LOOKUP_MESSAGES: Record<string, string> = {
   not_a_track: 'Dit is geen link naar een nummer. Kopieer in Spotify de link van een nummer.',
@@ -25,16 +26,14 @@ const SHORT_REMAINDER_SECONDS = 30;
 
 @Component({
   selector: 'app-song-choice-page',
-  imports: [FormField, FormRoot],
+  imports: [EmailClaim, FormField, FormRoot],
   templateUrl: './song-choice-page.html',
   styleUrl: './song-choice-page.scss',
 })
 export class SongChoicePage {
   private readonly songs = inject(PlayerSongService);
 
-  readonly token = input.required<string>();
-
-  protected readonly linkState = signal<LinkState>('checking');
+  protected readonly pageState = signal<PageState>('loading');
   protected readonly player = signal<Player | undefined>(undefined);
   protected readonly track = signal<TrackSummary | undefined>(undefined);
   protected readonly lookupError = signal<string | undefined>(undefined);
@@ -101,14 +100,15 @@ export class SongChoicePage {
   });
 
   constructor() {
-    effect(() => {
-      const token = this.token();
-      untracked(() => void this.openLink(token));
-    });
+    void this.loadPlayer();
   }
 
   protected onRetry(): void {
-    void this.openLink(this.token());
+    void this.loadPlayer();
+  }
+
+  protected onClaimed(): void {
+    void this.loadPlayer();
   }
 
   protected onUrlBlurred(): void {
@@ -176,25 +176,30 @@ export class SongChoicePage {
     }
   }
 
-  private async openLink(token: string): Promise<void> {
-    this.linkState.set('checking');
+  private async loadPlayer(): Promise<void> {
+    this.pageState.set('loading');
 
     try {
-      await this.songs.signInWithLink(token);
       const player = await this.songs.loadOwnPlayer();
       this.player.set(player);
+
+      if (!player.email) {
+        this.pageState.set('claim');
+        return;
+      }
+
       this.choice.set({
         url: player.songChoice ? `https://open.spotify.com/track/${player.songChoice.trackId}` : '',
         startTime: player.songChoice ? formatTime(player.songChoice.startSeconds) : '',
         spokenName: player.spokenName ?? '',
       });
-      this.linkState.set('ready');
+      this.pageState.set('ready');
 
       if (player.songChoice) {
         await this.lookUp(this.choice().url);
       }
-    } catch (error) {
-      this.linkState.set(error instanceof FunctionCallError && error.code === 'invalid_link' ? 'invalid' : 'failed');
+    } catch {
+      this.pageState.set('failed');
     }
   }
 }

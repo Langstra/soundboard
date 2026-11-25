@@ -48,6 +48,11 @@ html {
   font-weight: 500;
 }
 
+// Scrolling to a focused control stops short of the pinned settings header.
+html:has(app-settings-page) {
+  scroll-padding-block: 6rem 1rem;
+}
+
 body {
   margin: 0;
   min-block-size: 100dvh;

@@ -1,0 +1,49 @@
+@if (sentTo(); as address) {
+  <form class="app-email-code" [formRoot]="codeForm">
+    <p class="app-email-code__text" role="status">We hebben een code gestuurd naar {{ address }}.</p>
+
+    <label class="app-email-code__label">
+      Code uit je e-mail
+      <input
+        class="app-email-code__input app-email-code__input--mono"
+        type="text"
+        inputmode="numeric"
+        autocomplete="one-time-code"
+        [formField]="codeForm.code"
+      />
+    </label>
+
+    @if (codeForm.code().touched()) {
+      @for (error of codeForm.code().errors(); track error.kind) {
+        <p class="app-email-code__error" role="alert">{{ error.message }}</p>
+      }
+    }
+
+    @if (failure(); as message) {
+      <p class="app-email-code__error" role="alert">{{ message }}</p>
+    }
+
+    <button class="app-email-code__button app-email-code__button--primary" type="submit">Bevestig code</button>
+
+    <button class="app-email-code__button" type="button" (click)="onChangeAddress()">Ander e-mailadres</button>
+  </form>
+} @else {
+  <form class="app-email-code" [formRoot]="addressForm">
+    <label class="app-email-code__label">
+      E-mailadres
+      <input class="app-email-code__input" type="email" autocomplete="email" [formField]="addressForm.email" />
+    </label>
+
+    @if (addressForm.email().touched()) {
+      @for (error of addressForm.email().errors(); track error.kind) {
+        <p class="app-email-code__error" role="alert">{{ error.message }}</p>
+      }
+    }
+
+    @if (failure(); as message) {
+      <p class="app-email-code__error" role="alert">{{ message }}</p>
+    }
+
+    <button class="app-email-code__button app-email-code__button--primary" type="submit">Stuur code</button>
+  </form>
+}

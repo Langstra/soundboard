@@ -1,0 +1,5 @@
+<p class="app-email-claim__text">
+  Vul je e-mailadres in. Je krijgt een code om het te bevestigen. Daarna kun je ook zonder persoonlijke link inloggen.
+</p>
+
+<app-email-code-form [requestCode]="requestCode" [confirmCode]="confirmCode" (completed)="claimed.emit()" />

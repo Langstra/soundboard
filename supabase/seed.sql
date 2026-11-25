@@ -52,9 +52,9 @@ begin
     );
 
     if player.number > 0 then
-      insert into public.players (id, display_name, spoken_name, spotify_track_id, start_seconds)
+      insert into public.players (id, display_name, email, spoken_name, spotify_track_id, start_seconds)
       values (
-        user_id, player.name, player.spoken_name,
+        user_id, player.name, 'player-' || player.number || '@soundboard.test', player.spoken_name,
         case when player.has_song then tracks[1 + player.number % 3] end,
         case when player.has_song then 20 + player.number * 7 end
       );

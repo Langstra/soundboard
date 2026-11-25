@@ -8,6 +8,7 @@ export class AuthService {
 
   private readonly session = signal<Session | undefined>(undefined);
 
+  readonly isSignedIn = computed(() => this.session() !== undefined);
   readonly isOperator = computed(() => this.session()?.user.app_metadata['role'] === 'operator');
 
   private readonly ready = this.restoreSession();
